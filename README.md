@@ -1,2 +1,2 @@
 # Ruge-
-plataforma Ruge-gestión y autorización de empresa 
+plataforma Ruge-la producción académica 
