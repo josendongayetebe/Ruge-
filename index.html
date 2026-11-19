@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUGE-EG | Repositorio Académico Nacional de Guinea Ecuatorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0f2e1f;--gold:#c8a96a;--cream:#fdfbf5;--paper:#fffdf7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:#1a1a1a}
+.hero{background:var(--green);color:white;padding:60px 20px;text-align:center;position:relative;overflow:hidden}
+.hero h1{font-family:'Playfair Display',serif;font-size:48px;line-height:0.9;letter-spacing:-2px}
+.hero h1 span{color:var(--gold);display:block;font-size:28px;letter-spacing:4px;margin-top:8px}
+.hero p{max-width:600px;margin:20px auto 0;color:#cbd5d1;font-size:15px}
+.nav{display:flex;justify-content:center;gap:10px;margin-top:24px}
+.nav button{border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:white;padding:10px 22px;border-radius:999px;cursor:pointer;font-weight:600}
+.nav button.active{background:white;color:var(--green)}
+.search-wrap{max-width:800px;margin:-28px auto 0;background:white;border-radius:20px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,0.08);display:flex;gap:12px;align-items:center;position:relative;z-index:2}
+.search-wrap input{flex:1;border:1px solid #e8e0d0;border-radius:12px;padding:14px 16px;font-size:15px;outline:none}
+.filters{display:flex;gap:8px;overflow:auto;padding:16px 20px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto}
+.filters button{border:1px solid #e8e0d0;background:white;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.filters button.active{background:var(--green);color:white;border-color:var(--green)}
+.grid{max-width:1100px;margin:10px auto 40px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{background:white;border:1px solid #f0ebe0;border-radius:16px;padding:20px;transition:0.2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.06)}
+.card .tag{display:inline-block;background:#fdf6e3;color:#8a6d2b;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:10px;letter-spacing:0.5px}
+.card h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--green);line-height:1.2;margin-bottom:8px}
+.card p{font-size:13px;color:#6b7280;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+.card .meta a{background:var(--green);color:white;text-decoration:none;padding:8px 16px;border-radius:999px;font-size:12px;font-weight:700}
+.btn-gold{background:var(--gold);color:var(--green);border:none;padding:14px 28px;border-radius:999px;font-weight:800;cursor:pointer;font-size:14px;display:block;margin:24px auto}
+#adminView{display:none;max-width:800px;margin:30px auto;padding:0 20px}
+.form{background:white;border-radius:20px;padding:24px;border:1px solid #e8e0d0}
+.form h2{font-family:'Playfair Display',serif;color:var(--green);margin-bottom:16px}
+.form label{font-size:12px;font-weight:700;color:var(--green);margin-top:12px;display:block;text-transform:uppercase;letter-spacing:0.5px}
+.form input,.form select,.form textarea{width:100%;margin-top:6px;padding:12px;border:1px solid #e8e0d0;border-radius:10px;font-size:14px}
+.form button{width:100%;margin-top:18px;background:var(--green);color:white;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer}
+.doc-list{margin-top:20px}
+.doc-item{background:white;border:1px solid #e8e0d0;border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#subModal{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1>RUGE-EG<span>REPOSITORIO NACIONAL</span></h1>
+<p>El archivo académico oficial de Guinea Ecuatorial. Acceso a tratados, acuerdos, diplomacia y documentos oficiales.</p>
+<div class="nav">
+<button id="btnPublic" class="active" onclick="showPublic()">Vista Pública</button>
+<button id="btnAdmin" onclick="showAdmin()">Panel Admin</button>
+</div>
+</div>
+
+<div id="publicView">
+<button class="btn-gold" onclick="openSub()">Suscribirse Ahora - 3.000 XAF / mes → WhatsApp 555 742 025</button>
+<div class="search-wrap">
+<input id="search" placeholder="Buscar por título, carrera, descripción..." oninput="filterDocs()">
+<span id="counter" style="font-size:12px;color:#6b7280;font-weight:700;white-space:nowrap"></span>
+</div>
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+</div>
+
+<div id="adminView">
+<div class="form">
+<h2>Subir Documento</h2>
+<p style="font-size:12px;color:#6b7280;margin-bottom:12px">Acceso restringido a administradores</p>
+<label>Título del documento</label>
+<input id="fTitle" placeholder="Ej: Convención de Viena 1961">
+<label>Descripción</label>
+<textarea id="fDesc" rows="3" placeholder="Resumen del documento..."></textarea>
+<label>Carrera</label>
+<select id="fCat">
+<option>Derecho</option>
+<option>Relaciones Internacionales</option>
+<option>Ciencias Politicas</option>
+<option>Administracion Publica</option>
+<option>Economia</option>
+<option>Historia</option>
+<option>Diplomacia</option>
+</select>
+<label>Archivo PDF o DOCX</label>
+<input id="fFile" type="file" accept=".pdf,.docx">
+<button onclick="uploadDoc()">Subir Documento</button>
+<p id="uploadStatus" style="font-size:12px;margin-top:10px"></p>
+</div>
+<div id="adminList" class="doc-list"></div>
+</div>
+
+<div id="subModal">
+<div style="background:white;border-radius:20px;max-width:460px;width:100%;padding:28px;position:relative">
+<button onclick="closeSub()" style="position:absolute;top:12px;right:12px;border:none;background:#f3f3f3;border-radius:50%;width:32px;height:32px;cursor:pointer">✕</button>
+<h2 style="font-family:'Playfair Display',serif;font-size:24px;color:#0f2e1f">Suscribirse a RUGE-EG</h2>
+<p style="font-size:13px;color:#6b7280;margin-top:8px">Paga por MUNI DINERO y activa al instante vía WhatsApp</p>
+<div style="margin-top:20px;display:grid;gap:12px">
+<div onclick="selectPlan('estudiante')" id="plan-estudiante" style="border:2px solid #0f2e1f;border-radius:12px;padding:16px;cursor:pointer;background:#fdfbf5">
+<div style="display:flex;justify-content:space-between"><strong>Estudiante</strong><span style="font-weight:800;color:#0f2e1f">3.000 XAF/mes</span></div>
+<p style="font-size:12px;color:#6b7280;margin-top:4px">Acceso total para estudiantes</p>
+</div>
+<div onclick="selectPlan('institucional')" id="plan-institucional" style="border:1px solid #e8e0d0;border-radius:12px;padding:16px;cursor:pointer">
+<div style="display:flex;justify-content:space-between"><strong>Institucional</strong><span style="font-weight:800">15.000 XAF/mes</span></div>
+<p style="font-size:12px;color:#6b7280;margin-top:4px">Para universidades y bibliotecas</p>
+</div>
+</div>
+<a href="https://wa.me/240555742025?text=Hola%2C%20quiero%20pagar%20RUGE-EG%20por%20MUNI%20DINERO%20555%20742%20025" target="_blank" style="text-decoration:none">
+<div style="margin-top:20px;background:#0f2e1f;color:white;border-radius:12px;padding:16px;text-align:center">
+<div style="font-size:11px;color:#c8a96a;letter-spacing:1px;font-weight:700">PAGO POR MUNI DINERO - CLICK AQUI</div>
+<div style="font-size:30px;font-weight:800;margin:8px 0;color:white">555 742 025</div>
+<div style="font-size:12px;color:#cbd5d1">Te lleva directo a WhatsApp</div>
+</div></a>
+<div style="margin-top:16px">
+<input id="subPhone" placeholder="Tu WhatsApp ej: 222 123456" style="width:100%;padding:12px;border:1px solid #e8e0d0;border-radius:10px">
+</div>
+<button onclick="confirmSub()" style="width:100%;margin-top:16px;background:#0f2e1f;color:white;border:none;padding:14px;border-radius:10px;font-weight:700;cursor:pointer">Confirmar y Abrir WhatsApp</button>
+<p id="subMsg" style="display:none;font-size:12px;color:green;margin-top:10px;text-align:center"></p>
+</div>
+</div>
+
+<script>
+const SUPABASE_URL='https://gqnrpmpgpenwplphpyvv.supabase.co';
+let SUPABASE_ANON_KEY=localStorage.getItem('ruge_anon_key')||'';
+const ADMIN_PASS='****';
+let docs=[];
+const carreras=['Todos','Derecho','Relaciones Internacionales','Ciencias Politicas','Administracion Publica','Economia','Historia','Diplomacia'];
+let activeFilter='Todos';
+let selectedPlan='estudiante';
+
+function renderFilters(){
+ const c=document.getElementById('filters');
+ c.innerHTML=carreras.map(cat=>`<button class="${cat===activeFilter?'active':''}" onclick="setFilter('${cat}')">${cat}</button>`).join('');
+}
+function setFilter(cat){ activeFilter=cat; renderFilters(); filterDocs(); }
+function showPublic(){ document.getElementById('publicView').style.display='block'; document.getElementById('adminView').style.display='none'; document.getElementById('btnPublic').classList.add('active'); document.getElementById('btnAdmin').classList.remove('active'); }
+function showAdmin(){
+ const p=prompt('Clave admin:');
+ if(p!== 'ruge2024' && p!==ADMIN_PASS){ alert('Clave incorrecta'); return; }
+ document.getElementById('publicView').style.display='none';
+ document.getElementById('adminView').style.display='block';
+ document.getElementById('btnAdmin').classList.add('active');
+ document.getElementById('btnPublic').classList.remove('active');
+ loadAdminList();
+}
+
+function getMockDocs(){
+ return [
+  {id:1,title:'Convención de Viena sobre Relaciones Diplomáticas 1961',category:'Diplomacia',description:'Tratado fundamental que regula las relaciones diplomáticas entre Estados. Establece inmunidades y privilegios diplomáticos.',file_url:'#'},
+  {id:2,title:'Carta de las Naciones Unidas',category:'Derecho',description:'Documento constitutivo de la ONU, firmado en 1945. Base del derecho internacional moderno.',file_url:'#'},
+  {id:3,title:'Acuerdo de Cooperación EG-España',category:'Relaciones Internacionales',description:'Acuerdo marco de cooperación educativa y cultural entre Guinea Ecuatorial y España.',file_url:'#'},
+  {id:4,title:'Ley de Función Pública de Guinea Ecuatorial',category:'Administracion Publica',description:'Regulación de la administración pública y carrera administrativa en GE.',file_url:'#'},
+  {id:5,title:'Tratado de la CEMAC',category:'Economia',description:'Tratado constitutivo de la Comunidad Económica y Monetaria de África Central.',file_url:'#'},
+ ];
+}
+
+function renderDocs(list){
+ const grid=document.getElementById('grid');
+ if(!list.length){ grid.innerHTML='<p style="grid-column:1/-1;text-align:center;color:#6b7280;padding:40px">No se encontraron documentos</p>'; return; }
+ grid.innerHTML=list.map(d=>`
+  <div class="card">
+   <span class="tag">${d.category||d.carrera||'General'}</span>
+   <h3>${d.title}</h3>
+   <p>${d.description||''}</p>
+   <div class="meta">
+    <span style="font-size:11px;color:#9ca3af">${(d.category||'').toUpperCase()}</span>
+    <a href="${d.file_url||'#'}" target="_blank">Ver PDF</a>
+   </div>
+  </div>
+ `).join('');
+ document.getElementById('counter').innerText=list.length+' documentos';
+}
+
+function filterDocs(){
+ const q=document.getElementById('search').value.toLowerCase();
+ let f=docs.filter(d=>{
+  const matchSearch = !q || (d.title||'').toLowerCase().includes(q) || (d.description||'').toLowerCase().includes(q) || (d.category||'').toLowerCase().includes(q);
+  const matchCat = activeFilter==='Todos' || (d.category||'')===activeFilter || (d.carrera||'')===activeFilter;
+  return matchSearch && matchCat;
+ });
+ renderDocs(f);
+}
+
+function openSub(){ document.getElementById('subModal').style.display='flex'; }
+function closeSub(){ document.getElementById('subModal').style.display='none'; }
+function selectPlan(p){ selectedPlan=p; document.getElementById('plan-estudiante').style.border = p==='estudiante' ? '2px solid #0f2e1f' : '1px solid #e8e0d0'; document.getElementById('plan-institucional').style.border = p==='institucional' ? '2px solid #0f2e1f' : '1px solid #e8e0d0'; }
+function confirmSub(){
+ const phone=document.getElementById('subPhone').value.trim();
+ const plan = selectedPlan==='estudiante' ? '3.000 XAF Estudiante' : '15.000 XAF Institucional';
+ const msg = `Hola, soy ${phone||'cliente'}. Acabo de pagar ${plan} por MUNI DINERO al 555 742 025 para RUGE-EG. Activen mi acceso por favor.`;
+ const url = 'https://wa.me/240555742025?text='+encodeURIComponent(msg);
+ window.location.href=url;
+}
+
+async function init(){
+ renderFilters();
+ docs=getMockDocs();
+ renderDocs(docs);
+ if(SUPABASE_ANON_KEY){ try{ const r=await fetch(SUPABASE_URL+'/rest/v1/documents?select=*', {headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY}}); if(r.ok){ const data=await r.json(); if(data.length){ docs=data; renderDocs(docs);} } }catch(e){} }
+}
+
+function loadAdminList(){ const c=document.getElementById('adminList'); c.innerHTML=docs.map(d=>`<div class="doc-item"><div><strong>${d.title}</strong><br><small>${d.category}</small></div><button onclick="deleteDoc(${d.id})" style="border:none;background:#fee2e2;color:#b91c1c;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px">Borrar</button></div>`).join(''); }
+function uploadDoc(){ alert('Conecta Supabase para subir documentos reales. Por ahora modo demo.'); }
+function deleteDoc(id){ if(confirm('¿Borrar?')){ docs=docs.filter(d=>d.id!==id); renderDocs(docs); loadAdminList(); } }
+
+init();
+</script>
+</body>
+</html>
