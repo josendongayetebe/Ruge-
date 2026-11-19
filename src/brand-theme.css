@@ -1,4 +1,0 @@
-:root{--ruge-green:#009e49;--ruge-dark:#0a2e1a;--ruge-cream:#FFFCF5;--ruge-gold:#FFC61A;}
-body{background:var(--ruge-cream);color:var(--ruge-dark);font-family:Inter,sans-serif;}
-.btn-ruge{background:var(--ruge-green);color:white;padding:12px 24px;border-radius:12px;font-weight:700;}
-.card-ruge{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:24px;}
