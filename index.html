@@ -44,13 +44,12 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:#1a1a1a}
 <body>
 <div class="hero">
 <h1>RUGE-EG<span>REPOSITORIO NACIONAL</span></h1>
-<p>El archivo académico oficial de Guinea Ecuatorial. Acceso a tratados, acuerdos, diplomacia y documentos oficiales.</p>
+<p>El archivo académico de Guinea Ecuatorial.</p>
 <div class="nav">
 <button id="btnPublic" class="active" onclick="showPublic()">Vista Pública</button>
 <button id="btnAdmin" onclick="showAdmin()">Panel Admin</button>
 </div>
 </div>
-
 <div id="publicView">
 <button class="btn-gold" onclick="openSub()">Suscribirse Ahora - 3.000 XAF / mes → WhatsApp 555 742 025</button>
 <div class="search-wrap">
@@ -60,7 +59,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:#1a1a1a}
 <div class="filters" id="filters"></div>
 <div class="grid" id="grid"></div>
 </div>
-
 <div id="adminView">
 <div class="form">
 <h2>Subir Documento</h2>
@@ -86,7 +84,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:#1a1a1a}
 </div>
 <div id="adminList" class="doc-list"></div>
 </div>
-
 <div id="subModal">
 <div style="background:white;border-radius:20px;max-width:460px;width:100%;padding:28px;position:relative">
 <button onclick="closeSub()" style="position:absolute;top:12px;right:12px;border:none;background:#f3f3f3;border-radius:50%;width:32px;height:32px;cursor:pointer">✕</button>
@@ -115,7 +112,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:#1a1a1a}
 <p id="subMsg" style="display:none;font-size:12px;color:green;margin-top:10px;text-align:center"></p>
 </div>
 </div>
-
 <script>
 const SUPABASE_URL='https://gqnrpmpgpenwplphpyvv.supabase.co';
 let SUPABASE_ANON_KEY=localStorage.getItem('ruge_anon_key')||'';
@@ -124,7 +120,6 @@ let docs=[];
 const carreras=['Todos','Derecho','Relaciones Internacionales','Ciencias Politicas','Administracion Publica','Economia','Historia','Diplomacia'];
 let activeFilter='Todos';
 let selectedPlan='estudiante';
-
 function renderFilters(){
  const c=document.getElementById('filters');
  c.innerHTML=carreras.map(cat=>`<button class="${cat===activeFilter?'active':''}" onclick="setFilter('${cat}')">${cat}</button>`).join('');
